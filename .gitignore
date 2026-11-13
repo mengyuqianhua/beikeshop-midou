@@ -1,0 +1,28 @@
+/vendor
+/node_modules
+
+# 运行时与生成文件
+/public/cache
+/public/upload
+/public/storage
+/storage/*.log
+/storage/app/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/testing/*
+/storage/framework/views/*
+/bootstrap/cache/*
+!/storage/app/.gitignore
+
+# 环境与密钥
+.env
+.env.*
+!.env.example
+
+# 编辑器与系统文件
+.idea
+.vscode
+.DS_Store
+Thumbs.db
+*.log
+.phpunit.result.cache
