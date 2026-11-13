@@ -1,0 +1,17 @@
+{
+    "code": "auto_translate",
+    "name": {
+        "zh_cn": "商品中文自动翻译",
+        "en": "Product Chinese Auto Translator"
+    },
+    "description": {
+        "zh_cn": "商品编辑页监听中文输入，自动翻译并填充到对应英文输入框；支持富文本、规格与参数弹窗、手动一键翻译。",
+        "en": "Watch Chinese inputs on the product form, translate and fill the matching English fields; supports rich text, variant/attribute dialogs and manual batch translation."
+    },
+    "type": "feature",
+    "version": "v1.0.0",
+    "author": {
+        "name": "Midou",
+        "email": "service@haricotssucres.com"
+    }
+}
