@@ -65,6 +65,28 @@ class HtmlTranslator
             $html
         );
 
+        // 内联样式中的 background-image:url(...) 同样需要保护，避免 URL 被翻译接口改写
+        $withStyles = preg_replace_callback(
+            '/url\(\s*(["\']?)([^)"\']*)\1\s*\)/iu',
+            function (array $matches) use (&$urls) {
+                $value = $matches[2];
+                if (trim($value) === '' || str_starts_with($value, 'data:')) {
+                    return $matches[0];
+                }
+
+                $token        = self::URL_TOKEN_PREFIX . count($urls) . self::URL_TOKEN_SUFFIX;
+                $urls[$token] = $value;
+                $quote        = $matches[1];
+
+                return 'url(' . $quote . $token . $quote . ')';
+            },
+            $prepared ?? $html
+        );
+
+        if (is_string($withStyles)) {
+            $prepared = $withStyles;
+        }
+
         return [$prepared ?? $html, $urls];
     }
 

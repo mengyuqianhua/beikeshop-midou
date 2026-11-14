@@ -28,6 +28,11 @@ class Translator
             return $cached;
         }
 
+        // 纯链接字段原样返回，避免翻译接口在 URL 中插入空格或改写路径
+        if (! $html && $this->looksLikeUrl($text)) {
+            return $text;
+        }
+
         $result = $html
             ? (new HtmlTranslator($this, $from, $to))->translate($text)
             : $this->plainCached($from, $to, $text);
@@ -53,6 +58,10 @@ class Translator
         $cached   = Cache::get($cacheKey);
         if (is_string($cached) && $cached !== '') {
             return $cached;
+        }
+
+        if ($this->looksLikeUrl($text)) {
+            return $text;
         }
 
         $result = $this->plain($from, $to, $text);
@@ -115,5 +124,13 @@ class Translator
     private function cacheKey(string $from, string $to, string $type, string $text): string
     {
         return 'auto_translate:' . md5($this->provider() . '|' . $from . '|' . $to . '|' . $type . '|' . $text);
+    }
+
+    /**
+     * 判断整段文本是否只是一个链接
+     */
+    private function looksLikeUrl(string $text): bool
+    {
+        return (bool) preg_match('#^https?://\S+$#i', $text);
     }
 }
