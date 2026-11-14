@@ -10,6 +10,15 @@ class HtmlTranslator
 {
     private const MAX_TEXT_NODES = 200;
 
+    /**
+     * 链接类属性，翻译前用占位符替换，避免翻译接口在长 URL 中插入空格导致图片/链接失效
+     */
+    private const URL_ATTRIBUTES = 'src|href|data-src|data-original|data-bg|poster|srcset|action';
+
+    private const URL_TOKEN_PREFIX = 'ATXURL';
+
+    private const URL_TOKEN_SUFFIX = 'XAT';
+
     public function __construct(private Translator $translator, private string $from, private string $to)
     {
     }
@@ -19,12 +28,64 @@ class HtmlTranslator
      */
     public function translate(string $html): string
     {
-        $whole = $this->translator->translateHtmlWhole($this->from, $this->to, $html);
-        if (is_string($whole) && $whole !== '' && $this->structureMatches($html, $whole)) {
-            return $whole;
+        [$prepared, $urls] = $this->protectUrls($html);
+
+        $whole = $this->translator->translateHtmlWhole($this->from, $this->to, $prepared);
+        if (is_string($whole) && $whole !== '' && $this->structureMatches($prepared, $whole)) {
+            $restored = $this->restoreUrls($whole, $urls);
+            if (! preg_match('/' . self::URL_TOKEN_PREFIX . '\d+' . self::URL_TOKEN_SUFFIX . '/i', $restored)) {
+                return $restored;
+            }
         }
 
         return $this->translateNodes($html);
+    }
+
+    /**
+     * 将属性中的 URL 替换为占位符
+     *
+     * @return array{0: string, 1: array<string, string>}
+     */
+    private function protectUrls(string $html): array
+    {
+        $urls     = [];
+        $prepared = preg_replace_callback(
+            '/(\s(?:' . self::URL_ATTRIBUTES . ')\s*=\s*)(["\'])([^"\']*)\2/iu',
+            function (array $matches) use (&$urls) {
+                $value = $matches[3];
+                if (trim($value) === '' || str_starts_with($value, 'data:')) {
+                    return $matches[0];
+                }
+
+                $token         = self::URL_TOKEN_PREFIX . count($urls) . self::URL_TOKEN_SUFFIX;
+                $urls[$token]  = $value;
+
+                return $matches[1] . '"' . $token . '"';
+            },
+            $html
+        );
+
+        return [$prepared ?? $html, $urls];
+    }
+
+    /**
+     * 翻译完成后还原占位符
+     */
+    private function restoreUrls(string $html, array $urls): string
+    {
+        if (! $urls) {
+            return $html;
+        }
+
+        return preg_replace_callback(
+            '/' . self::URL_TOKEN_PREFIX . '(\d+)' . self::URL_TOKEN_SUFFIX . '/i',
+            function (array $matches) use ($urls) {
+                $token = self::URL_TOKEN_PREFIX . $matches[1] . self::URL_TOKEN_SUFFIX;
+
+                return $urls[$token] ?? $matches[0];
+            },
+            $html
+        ) ?? $html;
     }
 
     /**
