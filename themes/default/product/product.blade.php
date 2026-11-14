@@ -25,6 +25,167 @@
       display: none;
     }
   </style>
+  <style id="product-detail-square">
+    /* 商品详情图片：统一正方形通栏展示，仿小红书/淘宝详情排版 */
+    .tb-detail {
+      background: #fff;
+      border-radius: 12px;
+      padding: 24px;
+    }
+
+    .tb-detail__track {
+      max-width: 750px;
+      margin: 0 auto;
+      font-size: 15px;
+      line-height: 1.8;
+      color: #333;
+      word-break: break-word;
+    }
+
+    /* 文字排版区：恢复正常行高，避免多行文字互相重叠 */
+    .tb-detail__track p {
+      margin: 0 0 16px;
+      line-height: 1.8;
+    }
+
+    .tb-detail__track p:empty {
+      display: none;
+    }
+
+    .tb-detail__track h1,
+    .tb-detail__track h2,
+    .tb-detail__track h3,
+    .tb-detail__track h4 {
+      margin: 26px 0 12px;
+      line-height: 1.45;
+      font-weight: 700;
+      color: #1a1a1a;
+    }
+
+    .tb-detail__track h1 { font-size: 22px !important; }
+    .tb-detail__track h2 { font-size: 20px !important; }
+    .tb-detail__track h3 { font-size: 17px !important; }
+    .tb-detail__track h4 { font-size: 16px !important; }
+
+    .tb-detail__track ul,
+    .tb-detail__track ol {
+      margin: 0 0 16px;
+      padding-left: 22px;
+    }
+
+    .tb-detail__track li {
+      margin: 6px 0;
+      line-height: 1.8;
+    }
+
+    .tb-detail__track img {
+      display: block;
+      width: 100% !important;
+      height: auto !important;
+      margin: 8px auto;
+      border-radius: 10px;
+      background: #eef0f3;
+      opacity: 0;
+      transition: opacity .3s ease;
+      cursor: zoom-in;
+    }
+
+    .tb-detail__track img.lazyloaded,
+    .tb-detail__track img.is-loaded {
+      opacity: 1;
+    }
+
+    /* 点击放大预览 */
+    .tb-viewer {
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0, 0, 0, .94);
+      overscroll-behavior: contain;
+      touch-action: none;
+    }
+
+    .tb-viewer.is-open {
+      display: flex;
+    }
+
+    .tb-viewer__img {
+      max-width: 100vw;
+      max-height: 100vh;
+      object-fit: contain;
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+    .tb-viewer__close,
+    .tb-viewer__nav {
+      position: absolute;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 40px;
+      height: 40px;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .16);
+      color: #fff;
+      font-size: 20px;
+      line-height: 1;
+      cursor: pointer;
+      backdrop-filter: blur(4px);
+    }
+
+    .tb-viewer__close { top: 16px; right: 16px; }
+    .tb-viewer__nav { top: 50%; transform: translateY(-50%); }
+    .tb-viewer__nav--prev { left: 16px; }
+    .tb-viewer__nav--next { right: 16px; }
+
+    .tb-viewer__count {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      color: rgba(255, 255, 255, .86);
+      font-size: 13px;
+      letter-spacing: .04em;
+    }
+
+    .tb-viewer__nav[hidden] {
+      display: none;
+    }
+
+    @media (max-width: 767.98px) {
+      .tb-detail {
+        padding: 16px 12px 24px;
+        border-radius: 0;
+        background: #fff;
+      }
+
+      .tb-detail__track {
+        font-size: 15px;
+        line-height: 1.75;
+      }
+
+      .tb-detail__track p {
+        margin-bottom: 14px;
+      }
+
+      .tb-detail__track h1 { font-size: 20px !important; }
+      .tb-detail__track h2 { font-size: 18px !important; }
+      .tb-detail__track h3 { font-size: 16px !important; }
+
+      .tb-detail__track img {
+        margin: 6px auto;
+        border-radius: 8px;
+      }
+
+      .tb-viewer__close { top: 12px; right: 12px; }
+      .tb-viewer__nav { width: 36px; height: 36px; }
+    }
+  </style>
 @endpush
 
 @php
@@ -260,7 +421,14 @@
       <div class="tab-content">
         @hook('shop.product.description.tabs.content.before')
         <div class="tab-pane fade show active" id="product-description" role="tabpanel">
-          <div class="rich-text-editor-content">{!! $product['description'] !!}</div>
+          <div class="tb-detail" id="tb-detail">
+            <div class="tb-detail__track rich-text-editor-content">
+              {!! $product['description'] !!}
+              @foreach ($product['detail_images'] ?? [] as $detailImage)
+                <img class="pd-image lazyload" src="{{ $detailImage['thumb'] }}" data-src="{{ $detailImage['url'] }}" data-original="{{ $detailImage['origin'] }}" width="1000" alt="" loading="lazy" decoding="async">
+              @endforeach
+            </div>
+          </div>
         </div>
         <div class="tab-pane fade" id="product-attributes" role="tabpanel">
           <table class="table table-bordered attribute-table">
@@ -658,24 +826,115 @@
       return variable.values[selectedVariantsIndex[index]]
     });
 
-    // 优化详情描述里面的图片加载 -> 懒加载
+    // 详情图片：保留后端输出的统一规格地址，仅补齐懒加载与淡入状态
     const descriptionImagesLazy = () => {
-      var $content = $('.rich-text-editor-content');
-      if (!$content.length) return;
+      var $track = $('.tb-detail__track');
+      if (!$track.length) return;
 
-      var $imgs = $content.find('img');
-      $imgs.each(function (index, img) {
-        var $img = $(img);
+      $track.find('img').each(function () {
+        var $img = $(this);
+        var src  = $img.attr('src');
+
+        if (!$img.attr('data-src') && src) {
+          $img.attr('data-src', src);
+        }
 
         $img.addClass('lazyload');
-
-        var src = $img.attr('src');
-        if (src) {
-          $img.attr('data-src', src);
-          $img.attr('src', '');
+        if (this.complete && this.naturalWidth) {
+          $img.addClass('is-loaded');
         }
       });
     };
+
+    document.addEventListener('lazyloaded', function (event) {
+      if (event.target && $(event.target).closest('.tb-detail__track').length) {
+        event.target.classList.add('is-loaded');
+      }
+    });
+
+    // 淘宝式图片预览：全屏遮罩 + 左右切换 + 手势滑动
+    const initDetailViewer = () => {
+      var $track = $('.tb-detail__track');
+      if (!$track.length || !$track.find('img').length) return;
+
+      var $viewer = $('<div class="tb-viewer" role="dialog" aria-modal="true" aria-label="{{ __('shop/products.product_details') }}">' +
+        '<button type="button" class="tb-viewer__close" aria-label="close">&times;</button>' +
+        '<button type="button" class="tb-viewer__nav tb-viewer__nav--prev" aria-label="prev">&#10094;</button>' +
+        '<button type="button" class="tb-viewer__nav tb-viewer__nav--next" aria-label="next">&#10095;</button>' +
+        '<img class="tb-viewer__img" alt="">' +
+        '<div class="tb-viewer__count"></div>' +
+        '</div>');
+
+      $('body').append($viewer);
+
+      var $img   = $viewer.find('.tb-viewer__img');
+      var $count = $viewer.find('.tb-viewer__count');
+      var index  = 0;
+      var touchStartX = 0;
+
+      var sources = function () {
+        return $track.find('img').map(function () {
+          return $(this).attr('data-original') || $(this).attr('data-src') || $(this).attr('src');
+        }).get();
+      };
+
+      var render = function () {
+        var list = sources();
+        if (!list.length) return;
+
+        index = (index + list.length) % list.length;
+        $img.attr('src', list[index]);
+        $count.text((index + 1) + ' / ' + list.length);
+        $viewer.find('.tb-viewer__nav').prop('hidden', list.length < 2);
+      };
+
+      var open = function (position) {
+        index = position;
+        render();
+        $viewer.addClass('is-open');
+        $('body').css('overflow', 'hidden');
+      };
+
+      var close = function () {
+        $viewer.removeClass('is-open');
+        $('body').css('overflow', '');
+      };
+
+      $track.on('click', 'img', function () {
+        open($track.find('img').index(this));
+      });
+
+      $viewer.on('click', '.tb-viewer__close', close);
+      $viewer.on('click', '.tb-viewer__nav--prev', function () { index--; render(); });
+      $viewer.on('click', '.tb-viewer__nav--next', function () { index++; render(); });
+      $viewer.on('click', function (event) {
+        if (event.target === this || event.target.className === 'tb-viewer__img') {
+          close();
+        }
+      });
+
+      $(document).on('keydown', function (event) {
+        if (!$viewer.hasClass('is-open')) return;
+
+        if (event.key === 'Escape') close();
+        if (event.key === 'ArrowLeft') { index--; render(); }
+        if (event.key === 'ArrowRight') { index++; render(); }
+      });
+
+      $viewer.on('touchstart', function (event) {
+        touchStartX = event.originalEvent.touches[0].clientX;
+      });
+
+      $viewer.on('touchend', function (event) {
+        var delta = event.originalEvent.changedTouches[0].clientX - touchStartX;
+        if (Math.abs(delta) < 40) return;
+
+        if (delta > 0) { index--; } else { index++; }
+        render();
+      });
+    };
+
+    $(initDetailViewer);
 
     @hook('product.detail.script.after')
   </script>
