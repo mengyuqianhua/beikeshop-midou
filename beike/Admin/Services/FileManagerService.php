@@ -375,7 +375,7 @@ class FileManagerService
         }
 
         return [
-            'url'  => asset('image/catalog/' . $filePath),
+            'url'  => asset($this->encodeUrlPath('image/catalog/' . $filePath)),
             'path' => 'image/catalog/' . $filePath,
         ];
     }
@@ -541,6 +541,14 @@ class FileManagerService
         }
 
         return true;
+    }
+
+    /**
+     * 对 URL 路径逐段编码，兼容中文/空格等字符，避免移动端浏览器发送原始 UTF-8 导致 400
+     */
+    private function encodeUrlPath(string $path): string
+    {
+        return implode('/', array_map('rawurlencode', explode('/', $path)));
     }
 
     /**
