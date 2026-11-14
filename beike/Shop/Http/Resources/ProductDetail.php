@@ -12,6 +12,7 @@
 
 namespace Beike\Shop\Http\Resources;
 
+use Beike\Services\ProductDetailImageService;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ProductDetail extends JsonResource
@@ -30,7 +31,14 @@ class ProductDetail extends JsonResource
         $data = [
             'id'               => $this->id,
             'name'             => $this->description->name             ?? '',
-            'description'      => $this->description->content          ?? '',
+            'description'      => ProductDetailImageService::normalize($this->description->content ?? ''),
+            'detail_images'    => $this->detailImages->map(function ($image) {
+                return [
+                    'url'    => ProductDetailImageService::cropUrl($image->image, $image->crop, 1000),
+                    'thumb'  => ProductDetailImageService::cropUrl($image->image, $image->crop, 400),
+                    'origin' => image_origin($image->image),
+                ];
+            })->filter(fn ($item) => ! empty($item['url']))->values()->toArray(),
             'meta_title'       => $this->description->meta_title       ?? '',
             'meta_keywords'    => $this->description->meta_keywords    ?? '',
             'meta_description' => $this->description->meta_description ?? '',

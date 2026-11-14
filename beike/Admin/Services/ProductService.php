@@ -4,6 +4,7 @@ namespace Beike\Admin\Services;
 
 use Beike\Models\Product;
 use Beike\Models\ProductSku;
+use Beike\Services\ProductDetailImageService;
 use Illuminate\Support\Facades\DB;
 
 class ProductService
@@ -38,6 +39,8 @@ class ProductService
             $data = $data['data'];
 
             $data['brand_id']  = (int) ($data['brand_id'] ?? 0);
+            $detailImages      = $data['detail_images'] ?? '[]';
+            unset($data['detail_images']);
             $data['position']  = (int) ($data['position'] ?? 0);
             $data['weight']    = (float) ($data['weight'] ?? 0);
             $data['variables'] = json_decode($data['variables'] ?? '[]');
@@ -77,6 +80,29 @@ class ProductService
                 $skus[]              = $sku;
             }
             $product->skus()->createMany($skus);
+
+            // 同步后台独立维护的商品详情图片（含裁切参数与排序）
+            $product->detailImages()->delete();
+            $detailImages = is_array($detailImages) ? $detailImages : json_decode($detailImages, true);
+            $detailRows   = [];
+            foreach (array_values(is_array($detailImages) ? $detailImages : []) as $index => $item) {
+                $image = trim((string) ($item['image'] ?? ''));
+                if ($image === '' || str_contains($image, '..')) {
+                    continue;
+                }
+
+                $crop = isset($item['crop']) && is_array($item['crop']) ? $item['crop'] : null;
+                ProductDetailImageService::cropUrl($image, $crop, 1000);
+
+                $detailRows[] = [
+                    'image'    => $image,
+                    'crop'     => $crop,
+                    'position' => $index,
+                ];
+            }
+            if ($detailRows) {
+                $product->detailImages()->createMany($detailRows);
+            }
 
             $product->categories()->sync($data['categories'] ?? []);
             $product->relations()->sync($data['relations'] ?? []);

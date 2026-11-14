@@ -41,6 +41,11 @@ class Product extends Base
         return $this->hasMany(ProductDescription::class);
     }
 
+    public function detailImages()
+    {
+        return $this->hasMany(ProductDetailImage::class)->orderBy('position');
+    }
+
     public function skus()
     {
         return $this->hasMany(ProductSku::class);

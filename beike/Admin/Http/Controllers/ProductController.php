@@ -164,7 +164,7 @@ class ProductController extends Controller
         if ($product->id) {
             $descriptions = $product->descriptions->keyBy('locale');
             $categoryIds  = $product->categories->pluck('id')->toArray();
-            $product->load('brand', 'attributes');
+            $product->load('brand', 'attributes', 'detailImages');
         }
 
         $product    = hook_filter('admin.product.form.product', $product);
@@ -176,6 +176,7 @@ class ProductController extends Controller
             'descriptions'              => $descriptions ?? [],
             'category_ids'              => $categoryIds  ?? [],
             'product_attributes'        => ProductAttributeResource::collection($product->attributes),
+            'detail_images'             => $product->id ? $product->detailImages : collect(),
             'relations'                 => ProductResource::collection($product->relations)->resource,
             'languages'                 => LanguageRepo::all(),
             'tax_classes'               => $taxClasses,

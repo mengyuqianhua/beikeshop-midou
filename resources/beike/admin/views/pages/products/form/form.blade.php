@@ -183,12 +183,208 @@
     .page-product-form .pf-convert__result.is-empty b { font-weight: 400; color: #b3b8c2; }
     .page-product-form .pf-convert__tip { margin: 10px 0 0; font-size: 12px; color: #9aa0aa; }
 
+    /* 图文信息区：图片容器固定正方尺寸，说明文字独立分区留白 */
+    .page-product-form .product-images-box {
+      padding: 16px;
+      border-radius: 14px;
+      background: #fafbfc;
+    }
+    .page-product-form .product-images {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
+      gap: 14px;
+    }
+    .page-product-form .product-images .product-item {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .page-product-form .product-images .product-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .page-product-form .product-images .product-item:first-of-type {
+      grid-column: span 2;
+      grid-row: span 2;
+      aspect-ratio: auto;
+      height: 100%;
+    }
+    .page-product-form .product-images .set-product-img {
+      width: 100%;
+      height: auto;
+      aspect-ratio: 1 / 1;
+      min-height: 0;
+    }
+    .page-product-form .product-images-box .help-text,
+    .page-product-form .help-text {
+      margin-top: 14px !important;
+      line-height: 1.65;
+      color: #9aa0a6;
+    }
+    .page-product-form .pf-card .card-body { padding: 24px; }
+    .page-product-form .row > [class*="col-"] > .mb-3,
+    .page-product-form .form-group { margin-bottom: 22px; }
+
+    /* 商品详情图独立模块 */
+    .pdim__head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .pdim__title { margin: 0 0 2px; font-size: 15px; font-weight: 600; color: #1a1a1a; }
+    .pdim__desc { margin: 0; font-size: 12px; color: #9aa0a6; }
+    .pdim__upload {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 28px 16px;
+      border: 1.5px dashed #d9dce1;
+      border-radius: 14px;
+      background: #fafbfc;
+      color: #666;
+      cursor: pointer;
+      transition: all .2s ease;
+      text-align: center;
+    }
+    .pdim__upload:hover,
+    .pdim__upload.is-dragover {
+      border-color: #ff2e4d;
+      background: #fff6f7;
+      color: #ff2e4d;
+    }
+    .pdim__upload i { font-size: 26px; }
+    .pdim__upload-title { font-size: 14px; font-weight: 600; }
+    .pdim__upload-tip { font-size: 12px; color: #9aa0a6; }
+    .pdim__status {
+      margin-top: 12px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 13px;
+      line-height: 1.6;
+    }
+    .pdim__status--info { background: #eef5ff; color: #1a6bd8; }
+    .pdim__status--success { background: #eefaf1; color: #1a9c53; }
+    .pdim__status--error { background: #fff1f2; color: #d92d3f; }
+    .pdim__list {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 14px;
+      margin-top: 16px;
+    }
+    .pdim__empty { margin-top: 12px; color: #9aa0a6; font-size: 13px; text-align: center; }
+    .pdim-item {
+      position: relative;
+      background: #fff;
+      border: 1px solid #eceef1;
+      border-radius: 12px;
+      padding: 8px;
+    }
+    .pdim-item.is-dragging { opacity: .45; }
+    .pdim-item__thumb {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #f2f3f5;
+    }
+    .pdim-item__thumb img { width: 100%; height: 100%; object-fit: contain; display: block; }
+    .pdim-item__index {
+      position: absolute;
+      top: 14px;
+      left: 14px;
+      min-width: 22px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 11px;
+      background: rgba(0, 0, 0, .55);
+      color: #fff;
+      font-size: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pdim-item__badge {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      font-size: 11px;
+      color: #fff;
+      background: rgba(255, 46, 77, .85);
+      border-radius: 6px;
+      padding: 1px 6px;
+    }
+    .pdim-item__actions { display: flex; gap: 4px; margin-top: 8px; }
+    .pdim-item__actions button {
+      flex: 1;
+      border: 1px solid #e6e8eb;
+      background: #fff;
+      border-radius: 8px;
+      font-size: 12px;
+      padding: 5px 0;
+      color: #555;
+    }
+    .pdim-item__actions button:hover { border-color: #ff2e4d; color: #ff2e4d; }
+    .pdim-item__actions .is-danger:hover { border-color: #d92d3f; color: #d92d3f; }
+    .pdim-modal { position: fixed; inset: 0; z-index: 20000; display: flex; align-items: center; justify-content: center; }
+    .pdim-modal[hidden] { display: none; }
+    .pdim-modal__mask { position: absolute; inset: 0; background: rgba(0, 0, 0, .55); }
+    .pdim-modal__panel {
+      position: relative;
+      width: min(720px, 92vw);
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 24px 60px rgba(0, 0, 0, .25);
+    }
+    .pdim-modal__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-bottom: 1px solid #f0f1f3;
+      font-weight: 600;
+    }
+    .pdim-modal__close { border: 0; background: transparent; font-size: 22px; line-height: 1; color: #999; }
+    .pdim-modal__body {
+      height: min(56vh, 460px);
+      background: #0f1115;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .pdim-modal__body img { max-width: 100%; max-height: 100%; display: block; }
+    .pdim-modal__foot { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 20px; }
+    .pdim-modal__hint { font-size: 12px; color: #9aa0a6; }
+
+    @media (max-width: 767.98px) {
+      .pdim__list { grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; }
+      .pdim-modal__foot { flex-direction: column; align-items: stretch; }
+    }
+
     /* 右侧栏吸顶 */
     .page-product-form .pf-sidebar { position: sticky; top: 12px; }
 
     @media (max-width: 991px) {
       .page-product-form .pf-sidebar { position: static; }
       .page-product-form .pf-convert__results { margin-left: 0; }
+    }
+
+    @media (max-width: 767.98px) {
+      .page-product-form .pf-card .card-body { padding: 16px; }
+      .page-product-form .product-images-box { padding: 12px; }
+      .page-product-form .product-images {
+        grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+        gap: 10px;
+      }
     }
   </style>
   @if (session()->has('success'))
@@ -427,6 +623,53 @@
                 </div>
               @endforeach
               @hook('admin.product.content.after')
+            </div>
+
+            <div class="pdim mt-4" id="pdim"
+                 data-upload-url="{{ admin_route('file_manager.upload') }}"
+                 data-items="{{ json_encode($detail_images, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) }}">
+              <input type="hidden" name="detail_images" id="pdim-input" value="[]">
+
+              <div class="pdim__head">
+                <div>
+                  <h6 class="pdim__title">详情图</h6>
+                  <p class="pdim__desc">展示在详情文字下方；上传后统一宽度，高度按原比例自适应</p>
+                </div>
+                <button type="button" class="btn btn-light btn-sm" id="pdim-library">
+                  <i class="bi bi-images me-1"></i>从图库选择
+                </button>
+              </div>
+
+              <button type="button" class="pdim__upload" id="pdim-upload">
+                <i class="bi bi-cloud-arrow-up"></i>
+                <span class="pdim__upload-title">点击或拖拽上传详情图</span>
+                <span class="pdim__upload-tip">支持 JPG / PNG / WEBP，可批量选择；大图会先优化体积再上传，保持清晰度</span>
+              </button>
+              <input type="file" id="pdim-file" accept="image/jpeg,image/png,image/webp" multiple hidden>
+
+              <div class="pdim__status" id="pdim-status" hidden></div>
+              <div class="pdim__list" id="pdim-list"></div>
+              <div class="pdim__empty" id="pdim-empty">还没有详情图，上传后将展示在详情文字下方</div>
+            </div>
+
+            <div class="pdim-modal" id="pdim-modal" hidden>
+              <div class="pdim-modal__mask" data-pdim-close></div>
+              <div class="pdim-modal__panel" role="dialog" aria-modal="true">
+                <div class="pdim-modal__head">
+                  <span>裁切详情图</span>
+                  <button type="button" class="pdim-modal__close" data-pdim-close>&times;</button>
+                </div>
+                <div class="pdim-modal__body">
+                  <img id="pdim-crop-image" alt="">
+                </div>
+                <div class="pdim-modal__foot">
+                  <span class="pdim-modal__hint">拖动图片调整裁切区域，滚轮或双指缩放；裁切比例由你自由决定</span>
+                  <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-light btn-sm" id="pdim-reset">重置</button>
+                    <button type="button" class="btn btn-primary btn-sm" id="pdim-apply">应用裁切</button>
+                  </div>
+                </div>
+              </div>
             </div>
 
             @hook('admin.product.form.main.card.description.after')
@@ -1027,8 +1270,446 @@
 @endsection
 
 @push('footer')
+  <link rel="stylesheet" href="{{ asset('beike/admin/vendor/cropper/cropper.min.css') }}">
+  <script src="{{ asset('beike/admin/vendor/cropper/cropper.min.js') }}"></script>
+  <script>
+    // 商品详情图：上传、裁切、排序、实时预览
+    (function () {
+      function boot() {
+        var root = document.getElementById('pdim');
+        if (!root) return;
+
+      var uploadUrl = root.getAttribute('data-upload-url');
+      var hiddenInput = document.getElementById('pdim-input');
+      var listEl = document.getElementById('pdim-list');
+      var emptyEl = document.getElementById('pdim-empty');
+      var statusEl = document.getElementById('pdim-status');
+      var fileInput = document.getElementById('pdim-file');
+      var uploadBox = document.getElementById('pdim-upload');
+        var modal = document.getElementById('pdim-modal');
+      var cropImage = document.getElementById('pdim-crop-image');
+      var csrfMeta = document.querySelector('meta[name="csrf-token"]');
+      var csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+
+      var MAX_SIZE = 5 * 1024 * 1024;
+      var ALLOWED = ['image/jpeg', 'image/png', 'image/webp'];
+      var items = [];
+      var draggingIndex = null;
+      var cropper = null;
+      var editingIndex = -1;
+
+      try {
+        items = JSON.parse(root.getAttribute('data-items') || '[]') || [];
+      } catch (e) {
+        items = [];
+      }
+      items = items.map(function (item) {
+        return { image: item.image, crop: item.crop || null, preview: null };
+      });
+
+      function setStatus(message, type) {
+        if (!message) {
+          statusEl.hidden = true;
+          statusEl.textContent = '';
+          return;
+        }
+        statusEl.hidden = false;
+        statusEl.className = 'pdim__status pdim__status--' + type;
+        statusEl.textContent = message;
+      }
+
+      function imageUrl(path) {
+        return path.indexOf('http') === 0 ? path : '/' + path.replace(/^\/+/, '');
+      }
+
+      function syncInput() {
+        hiddenInput.value = JSON.stringify(items.map(function (item, index) {
+          return { image: item.image, crop: item.crop, position: index };
+        }));
+        emptyEl.hidden = items.length > 0;
+      }
+
+      function render() {
+        listEl.innerHTML = '';
+        items.forEach(function (item, index) {
+          var wrap = document.createElement('div');
+          wrap.className = 'pdim-item';
+          wrap.draggable = true;
+          wrap.dataset.index = index;
+          wrap.innerHTML =
+            '<div class="pdim-item__thumb"><img src="' + (item.preview || imageUrl(item.image)) + '" alt=""></div>' +
+            '<span class="pdim-item__index">' + (index + 1) + '</span>' +
+            (item.crop ? '<span class="pdim-item__badge">已裁切</span>' : '') +
+            '<div class="pdim-item__actions">' +
+              '<button type="button" data-action="crop">裁切</button>' +
+              '<button type="button" data-action="up">↑</button>' +
+              '<button type="button" data-action="down">↓</button>' +
+              '<button type="button" class="is-danger" data-action="remove">删除</button>' +
+            '</div>';
+          listEl.appendChild(wrap);
+        });
+        syncInput();
+      }
+
+      function move(from, to) {
+        if (to < 0 || to >= items.length) return;
+        var moved = items.splice(from, 1)[0];
+        items.splice(to, 0, moved);
+        render();
+      }
+
+      listEl.addEventListener('click', function (event) {
+        var button = event.target.closest('button[data-action]');
+        if (!button) return;
+
+        var index = parseInt(button.closest('.pdim-item').dataset.index, 10);
+        var action = button.dataset.action;
+
+        if (action === 'crop') {
+          openCrop(index);
+        } else if (action === 'remove') {
+          items.splice(index, 1);
+          render();
+          setStatus('已删除 1 张图片', 'success');
+        } else if (action === 'up') {
+          move(index, index - 1);
+        } else if (action === 'down') {
+          move(index, index + 1);
+        }
+      });
+
+      listEl.addEventListener('dragstart', function (event) {
+        var item = event.target.closest('.pdim-item');
+        if (!item) return;
+        draggingIndex = parseInt(item.dataset.index, 10);
+        item.classList.add('is-dragging');
+      });
+
+      listEl.addEventListener('dragend', function (event) {
+        var item = event.target.closest('.pdim-item');
+        if (item) item.classList.remove('is-dragging');
+        draggingIndex = null;
+      });
+
+      listEl.addEventListener('dragover', function (event) {
+        if (draggingIndex !== null) event.preventDefault();
+      });
+
+      listEl.addEventListener('drop', function (event) {
+        if (draggingIndex === null) return;
+        var target = event.target.closest('.pdim-item');
+        if (!target) return;
+
+        event.preventDefault();
+        var to = parseInt(target.dataset.index, 10);
+        if (to !== draggingIndex) move(draggingIndex, to);
+        draggingIndex = null;
+      });
+
+      function compressImage(file) {
+        return new Promise(function (resolve) {
+          if (file.size <= MAX_SIZE) {
+            resolve(file);
+            return;
+          }
+
+          var objectUrl = URL.createObjectURL(file);
+          var image = new Image();
+
+          image.onload = function () {
+            var maxEdge = 4000;
+            var scale = Math.min(1, maxEdge / Math.max(image.width, image.height));
+            var canvas = document.createElement('canvas');
+            canvas.width = Math.round(image.width * scale);
+            canvas.height = Math.round(image.height * scale);
+            canvas.getContext('2d').drawImage(image, 0, 0, canvas.width, canvas.height);
+            URL.revokeObjectURL(objectUrl);
+
+            canvas.toBlob(function (blob) {
+              if (!blob) {
+                resolve(file);
+                return;
+              }
+
+              resolve(new File([blob], file.name.replace(/\.(png|webp|jpe?g)$/i, '.jpg'), { type: 'image/jpeg' }));
+            }, 'image/jpeg', 0.92);
+          };
+
+          image.onerror = function () {
+            URL.revokeObjectURL(objectUrl);
+            resolve(file);
+          };
+
+          image.src = objectUrl;
+        });
+      }
+
+      function uploadFiles(files) {
+        var pending = Array.prototype.slice.call(files || []);
+        if (!pending.length) return;
+
+        var valid = [];
+        var errors = [];
+
+        pending.forEach(function (file) {
+          if (ALLOWED.indexOf(file.type) === -1) {
+            errors.push(file.name + '：格式不支持');
+          } else {
+            valid.push(file);
+          }
+        });
+
+        if (!valid.length) {
+          setStatus(errors.join('；'), 'error');
+          return;
+        }
+
+        var total = valid.length;
+        var done = 0;
+
+        function finish() {
+          var message = '上传完成，共新增 ' + done + ' 张';
+          if (errors.length) message += '；' + errors.join('；');
+          setStatus(message, errors.length ? 'error' : 'success');
+        }
+
+        function upload(file) {
+          var form = new FormData();
+          form.append('file', file, file.name);
+          form.append('path', '/products');
+
+          return fetch(uploadUrl, {
+            method: 'POST',
+            headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' },
+            body: form,
+            credentials: 'same-origin'
+          })
+            .then(function (response) { return response.json(); })
+            .then(function (json) {
+              var path = json.path || (json.data && json.data.path);
+              if (path) {
+                items.push({ image: path, crop: null, preview: null });
+                done++;
+                render();
+              } else {
+                errors.push(file.name + '：' + (json.message || '上传失败'));
+              }
+            })
+            .catch(function () {
+              errors.push(file.name + '：网络异常');
+            });
+        }
+
+        function next() {
+          if (!valid.length) {
+            finish();
+            return;
+          }
+
+          var file = valid.shift();
+          setStatus('正在处理 ' + (done + 1) + '/' + total + '：' + file.name, 'info');
+
+          compressImage(file).then(function (prepared) {
+            if (prepared.size > MAX_SIZE) {
+              errors.push(file.name + '：压缩后仍超过 5MB');
+              next();
+              return;
+            }
+
+            upload(prepared).then(next);
+          });
+        }
+
+        next();
+      }
+
+      var libraryButton = document.getElementById('pdim-library');
+      if (libraryButton) {
+        libraryButton.addEventListener('click', function () {
+          if (!window.bk || typeof bk.fileManagerIframe !== 'function') {
+            setStatus('图库组件未加载，请刷新页面重试', 'error');
+            return;
+          }
+
+          bk.fileManagerIframe(function (images) {
+            if (!images || !images.length) return;
+
+            images.forEach(function (image) {
+              if (image && image.path) {
+                items.push({ image: image.path, crop: null, preview: null });
+              }
+            });
+
+            render();
+            setStatus('已从图库添加 ' + images.length + ' 张图片', 'success');
+          }, { mime: 'image' });
+        });
+      }
+
+      uploadBox.addEventListener('click', function () { fileInput.click(); });
+      fileInput.addEventListener('change', function () {
+        uploadFiles(fileInput.files);
+        fileInput.value = '';
+      });
+
+      ['dragenter', 'dragover'].forEach(function (name) {
+        uploadBox.addEventListener(name, function (event) {
+          event.preventDefault();
+          uploadBox.classList.add('is-dragover');
+        });
+      });
+
+      ['dragleave', 'drop'].forEach(function (name) {
+        uploadBox.addEventListener(name, function (event) {
+          event.preventDefault();
+          uploadBox.classList.remove('is-dragover');
+        });
+      });
+
+      uploadBox.addEventListener('drop', function (event) {
+        uploadFiles(event.dataTransfer.files);
+      });
+
+      function openCrop(index) {
+        editingIndex = index;
+        modal.hidden = false;
+
+        var url = imageUrl(items[index].image);
+        cropImage.src = url + (url.indexOf('?') === -1 ? '?' : '&') + 't=' + Date.now();
+
+        cropImage.onload = function () {
+          if (cropper) {
+            cropper.destroy();
+            cropper = null;
+          }
+
+          cropper = new Cropper(cropImage, {
+            aspectRatio: NaN,
+            viewMode: 1,
+            autoCropArea: 0.9,
+            background: false,
+            responsive: true,
+            movable: true,
+            zoomable: true,
+            scalable: true,
+            rotatable: false,
+            checkOrientation: false,
+            ready: function () {
+              if (items[index].crop) {
+                cropper.setData(items[index].crop);
+              }
+            }
+          });
+        };
+      }
+
+      function closeCrop() {
+        modal.hidden = true;
+        if (cropper) {
+          cropper.destroy();
+          cropper = null;
+        }
+        editingIndex = -1;
+      }
+
+      modal.addEventListener('click', function (event) {
+        if (event.target.hasAttribute('data-pdim-close')) closeCrop();
+      });
+
+      document.addEventListener('keydown', function (event) {
+        if (event.key === 'Escape' && !modal.hidden) closeCrop();
+      });
+
+      document.getElementById('pdim-reset').addEventListener('click', function () {
+        if (cropper) cropper.reset();
+      });
+
+      document.getElementById('pdim-apply').addEventListener('click', function () {
+        if (!cropper || editingIndex < 0) return;
+
+        var data = cropper.getData(true);
+        var ratio = data.width > 0 ? data.height / data.width : 1;
+        var canvas = cropper.getCroppedCanvas({
+          width: 400,
+          height: Math.max(1, Math.round(400 * ratio)),
+          imageSmoothingQuality: 'high'
+        });
+
+        items[editingIndex].crop = {
+          x: Math.round(data.x),
+          y: Math.round(data.y),
+          width: Math.round(data.width),
+          height: Math.round(data.height)
+        };
+        items[editingIndex].preview = canvas ? canvas.toDataURL('image/jpeg', 0.85) : null;
+
+        closeCrop();
+        render();
+        setStatus('裁切已更新，保存商品后生效', 'success');
+      });
+
+        render();
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', boot);
+      } else {
+        setTimeout(boot, 0);
+      }
+    })();
+  </script>
   <script>
     @hook('admin.product.edit.script.before')
+
+    // 商品描述富文本：编辑器内统一按正方形裁剪预览，与前台详情图一致
+    (function () {
+      var css = 'body img{width:100%!important;height:auto!important;aspect-ratio:1/1!important;object-fit:cover!important;object-position:center!important;display:block!important;margin:0 auto 8px!important;background:#eef0f3;border-radius:8px}body p{margin:0 0 8px!important}';
+
+      function isDescriptionEditor(editor) {
+        var el = editor && editor.getElement ? editor.getElement() : null;
+        var name = el ? (el.getAttribute('name') || '') : '';
+
+        return name.indexOf('descriptions[') === 0 && name.indexOf('[content]') !== -1;
+      }
+
+      function inject(editor) {
+        if (!editor || !isDescriptionEditor(editor)) {
+          return;
+        }
+
+        var apply = function () {
+          try {
+            var doc = editor.getDoc();
+            if (!doc || doc.getElementById('pd-square-style')) {
+              return;
+            }
+            var style = doc.createElement('style');
+            style.id = 'pd-square-style';
+            style.textContent = css;
+            doc.head.appendChild(style);
+          } catch (e) {
+            // 忽略编辑器未就绪异常
+          }
+        };
+
+        editor.on('init SetContent', apply);
+        apply();
+      }
+
+      function bind() {
+        if (!window.tinymce) {
+          return false;
+        }
+        tinymce.on('AddEditor', function (e) { inject(e.editor); });
+        (tinymce.editors || []).forEach(inject);
+
+        return true;
+      }
+
+      if (!bind()) {
+        document.addEventListener('DOMContentLoaded', bind);
+      }
+    })();
 
     $('.submit-form-edit, .submit-form').on('click', function () {
       submitBeforeFormat()
