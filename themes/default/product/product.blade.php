@@ -11,6 +11,7 @@
 @section('bk-page-loading', true)
 
 @addScript(asset('vendor/vue/2.7/vue' . (!config('app.debug') ? '.min' : '') . '.js'))
+@addScript(asset('vendor/qrcode/qrcode.min.js'))
 @addStyle(asset('vendor/swiper/swiper-bundle.min.css'))
 @addScript(asset('vendor/swiper/swiper-bundle.min.js'))
 @addScript(asset('vendor/zoom/jquery.zoom.min.js'))
@@ -186,10 +187,317 @@
       .tb-viewer__nav { width: 36px; height: 36px; }
     }
   </style>
+  <style id="xhs-note-style">
+    .xhs-note {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin: 0 0 20px;
+      padding: 10px;
+      border: 1px solid #f0f0f0;
+      border-radius: 14px;
+      background: #fff;
+      color: inherit;
+      text-decoration: none;
+      transition: border-color .3s ease, box-shadow .3s ease;
+    }
+    .xhs-note:hover {
+      border-color: #ffd0d9;
+      box-shadow: 0 8px 24px rgba(255, 36, 66, .08);
+      color: inherit;
+    }
+    .xhs-note__media {
+      position: relative;
+      flex: 0 0 auto;
+      width: 84px;
+      height: 84px;
+      border-radius: 10px;
+      overflow: hidden;
+      background: #f7f7f7;
+    }
+    .xhs-note__media img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform .6s ease;
+    }
+    .xhs-note:hover .xhs-note__media img {
+      transform: scale(1.05);
+    }
+    .xhs-note__badge {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      z-index: 2;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: #ff2442;
+      color: #fff;
+      font-size: 10px;
+      line-height: 1.4;
+      letter-spacing: .05em;
+    }
+    .xhs-note__play {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 28px;
+      height: 28px;
+      margin: -14px 0 0 -14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, .92);
+      color: #1a1a1a;
+      font-size: 16px;
+      line-height: 1;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, .15);
+    }
+    .xhs-note__body {
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      min-width: 0;
+    }
+    .xhs-note__title {
+      font-size: 15px;
+      font-weight: 600;
+      line-height: 1.4;
+      color: #1a1a1a;
+    }
+    .xhs-note__title-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      min-width: 0;
+    }
+    .xhs-note__logo {
+      flex: 0 0 16px;
+      width: 16px;
+      height: 16px;
+      padding: 2px;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      background: #ff2442;
+      overflow: hidden;
+    }
+    .xhs-note__logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      filter: brightness(0) invert(1);
+    }
+    .xhs-note__desc {
+      font-size: 12px;
+      line-height: 1.4;
+      color: #8c8c8c;
+    }
+    .xhs-note__cta {
+      margin-top: 2px;
+      display: inline-flex;
+      align-items: center;
+      gap: 2px;
+      font-size: 12px;
+      color: #ff2442;
+    }
+    .xhs-note__cta i {
+      font-size: 12px;
+    }
+    @media (max-width: 576px) {
+      .xhs-note { gap: 12px; padding: 9px; margin-bottom: 16px; }
+      .xhs-note__media { width: 72px; height: 72px; }
+      .xhs-note__title { font-size: 14px; }
+      .xhs-note__title-row { gap: 5px; }
+      .xhs-note__logo { flex-basis: 14px; width: 14px; height: 14px; }
+    }
+  </style>
+  <style id="platform-entry-style">
+    /* 未登录用户「立即购买」第三方平台下单入口 */
+    .platform-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2060;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(17, 17, 17, .55);
+      overflow-y: auto;
+    }
+
+    .platform-modal__dialog {
+      position: relative;
+      width: 100%;
+      max-width: 880px;
+      max-height: calc(100vh - 48px);
+      padding: 26px 26px 22px;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, .28);
+      text-align: center;
+      overflow-y: auto;
+    }
+
+    .platform-modal__close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 36px;
+      height: 36px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 50%;
+      background: #f5f5f5;
+      color: #666;
+      font-size: 15px;
+      line-height: 1;
+      cursor: pointer;
+      transition: background .2s, color .2s;
+    }
+
+    .platform-modal__close:hover { background: #ececec; color: #111; }
+
+    .platform-modal__title { margin: 0 0 6px; font-size: 22px; font-weight: 800; }
+
+    .platform-modal__sub { margin: 0 0 20px; color: #8a8a8a; font-size: 13px; }
+
+    .platform-modal__grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .platform-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 14px 14px;
+      border: 1px solid #eee;
+      border-radius: 16px;
+      background: #fff;
+      transition: transform .2s, box-shadow .2s, border-color .2s;
+    }
+
+    .platform-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--brand, #ddd);
+      box-shadow: 0 12px 28px rgba(0, 0, 0, .1);
+    }
+
+    .platform-card--xhs { --brand: #ff2442; }
+    .platform-card--taobao { --brand: #ff5000; }
+    .platform-card--douyin { --brand: #161823; }
+
+    .platform-card__head { display: flex; align-items: center; gap: 8px; }
+
+    .platform-card__logo {
+      flex: 0 0 34px;
+      width: 34px;
+      height: 34px;
+      padding: 6px;
+      box-sizing: border-box;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9px;
+      overflow: hidden;
+    }
+
+    .platform-card__logo img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+      filter: brightness(0) invert(1);
+    }
+
+    .platform-card__logo--xhs { background: #ff2442; }
+    .platform-card__logo--taobao { background: #ff5000; }
+    .platform-card__logo--douyin { background: #161823; padding: 4px; }
+    /* 抖音图标自带青/红双色描边，不能再整体反白 */
+    .platform-card__logo--douyin img { filter: none; }
+
+    .platform-card__name { font-size: 16px; font-weight: 700; color: #222; }
+
+    .platform-card__qr {
+      width: 132px;
+      height: 132px;
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid #f0f0f0;
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .platform-card__qr img,
+    .platform-card__qr canvas { width: 100% !important; height: auto !important; display: block; }
+
+    .platform-card__hint { font-size: 12px; color: #999; line-height: 1.4; }
+
+    .platform-card__btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      width: 100%;
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: var(--brand, #111);
+      color: #fff;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: filter .2s;
+    }
+
+    .platform-card__btn:hover { color: #fff; filter: brightness(.92); }
+
+    body.platform-modal-open { overflow: hidden; }
+
+    @media (max-width: 767px) {
+      .platform-modal { padding: 14px; align-items: flex-start; }
+      .platform-modal__dialog { padding: 22px 14px 16px; max-height: calc(100vh - 28px); border-radius: 14px; }
+      .platform-modal__title { font-size: 18px; }
+      .platform-modal__sub { margin-bottom: 14px; }
+      .platform-modal__grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+      .platform-card { padding: 12px 10px; gap: 8px; }
+      .platform-card__qr { width: 108px; height: 108px; }
+      .platform-card__name { font-size: 14px; }
+      .platform-card__btn { font-size: 13px; padding: 8px 10px; }
+    }
+
+    @media (max-width: 479px) {
+      .platform-modal__grid { grid-template-columns: 1fr; }
+      .platform-card { flex-direction: row; flex-wrap: wrap; justify-content: center; }
+      .platform-card__head { width: 100%; justify-content: center; }
+      .platform-card__qr { width: 120px; height: 120px; }
+      .platform-card__hint { width: 100%; }
+    }
+  </style>
 @endpush
 
 @php
   $iframeClass = request('iframe') ? 'd-none' : '';
+
+  // 第三方平台下单入口链接：小红书使用商品统一链接，淘宝/抖音优先使用后台配置的商品链接，未配置时按商品名称搜索
+  $platformProductName = trim($product['name'] ?? '');
+  $platformXhsUrl      = product_xhs_url($product);
+  $platformLinks       = [
+      'xhs'    => $platformXhsUrl !== '' ? $platformXhsUrl : 'https://www.xiaohongshu.com/search_result?keyword=' . urlencode($platformProductName),
+      'taobao' => !empty($product['taobao_url']) ? $product['taobao_url'] : 'https://s.taobao.com/search?q=' . urlencode($platformProductName),
+      'douyin' => !empty($product['douyin_url']) ? $product['douyin_url'] : 'https://www.douyin.com/search/' . urlencode($platformProductName),
+  ];
 @endphp
 
 @section('content')
@@ -275,6 +583,9 @@
           @hook('product.detail.price.after')
 
           @endhookwrapper
+
+          @include('product.xhs-note')
+
           <div class="stock-and-sku mb-lg-4 mb-2">
             @hook('shop.product.detail.quantity.before')
 
@@ -399,6 +710,57 @@
           </div>
 
           @hook('product.detail.after')
+
+          <div class="platform-modal" v-if="platformModal" @click.self="closePlatformModal">
+            <div class="platform-modal__dialog" role="dialog" aria-modal="true" aria-label="选择下单平台">
+              <button type="button" class="platform-modal__close" @click="closePlatformModal" aria-label="关闭下单入口">
+                <i class="bi bi-x-lg"></i>
+              </button>
+              <h3 class="platform-modal__title">选择下单平台</h3>
+              <p class="platform-modal__sub">无需登录，点击下方链接或使用对应 App 扫码即可下单</p>
+              <div class="platform-modal__grid">
+                <div class="platform-card platform-card--xhs">
+                  <div class="platform-card__head">
+                    <span class="platform-card__logo platform-card__logo--xhs">
+                      <img src="{{ asset('image/platform/xiaohongshu.svg') }}" alt="小红书" width="22" height="22">
+                    </span>
+                    <span class="platform-card__name">小红书</span>
+                  </div>
+                  <div class="platform-card__qr" data-qr="{{ $platformLinks['xhs'] }}"></div>
+                  <span class="platform-card__hint">打开小红书 App 扫码下单</span>
+                  <a class="platform-card__btn" href="{{ $platformLinks['xhs'] }}" target="_blank" rel="noopener noreferrer">
+                    去小红书下单 <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </div>
+                <div class="platform-card platform-card--taobao">
+                  <div class="platform-card__head">
+                    <span class="platform-card__logo platform-card__logo--taobao">
+                      <img src="{{ asset('image/platform/taobao.svg') }}" alt="淘宝" width="22" height="22">
+                    </span>
+                    <span class="platform-card__name">淘宝</span>
+                  </div>
+                  <div class="platform-card__qr" data-qr="{{ $platformLinks['taobao'] }}"></div>
+                  <span class="platform-card__hint">打开淘宝 App 扫码下单</span>
+                  <a class="platform-card__btn" href="{{ $platformLinks['taobao'] }}" target="_blank" rel="noopener noreferrer">
+                    去淘宝下单 <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </div>
+                <div class="platform-card platform-card--douyin">
+                  <div class="platform-card__head">
+                    <span class="platform-card__logo platform-card__logo--douyin">
+                      <img src="{{ asset('image/platform/douyin.svg') }}?v=3" alt="抖音" width="22" height="22">
+                    </span>
+                    <span class="platform-card__name">抖音</span>
+                  </div>
+                  <div class="platform-card__qr" data-qr="{{ $platformLinks['douyin'] }}"></div>
+                  <span class="platform-card__hint">打开抖音 App 扫码下单</span>
+                  <a class="platform-card__btn" href="{{ $platformLinks['douyin'] }}" target="_blank" rel="noopener noreferrer">
+                    去抖音下单 <i class="bi bi-box-arrow-up-right"></i>
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
@@ -551,6 +913,8 @@
         },
         request_variant: @json(request('variant')),
         extraCartParams: {},
+        isLogin: @json((bool) current_customer()),
+        platformModal: false,
         @hook('product.detail.vue.data')
       },
 
@@ -648,7 +1012,46 @@
           closeVideo()
         },
 
+        openPlatformModal() {
+          this.platformModal = true;
+          $('body').addClass('platform-modal-open');
+
+          this.$nextTick(() => {
+            if (typeof QRCode === 'undefined') {
+              return;
+            }
+
+            document.querySelectorAll('#product-app .platform-card__qr').forEach((el) => {
+              if (el.dataset.rendered === '1' || !el.dataset.qr) {
+                return;
+              }
+
+              new QRCode(el, {
+                text: el.dataset.qr,
+                width: 128,
+                height: 128,
+                colorDark: '#000000',
+                colorLight: '#ffffff',
+                correctLevel: QRCode.CorrectLevel.M,
+              });
+              el.dataset.rendered = '1';
+            });
+          });
+        },
+
+        closePlatformModal() {
+          this.platformModal = false;
+          $('body').removeClass('platform-modal-open');
+        },
+
         addCart(isBuyNow = false) {
+          // 未登录用户点击「立即购买」时展示第三方平台下单入口，无需登录
+          if (isBuyNow && !this.isLogin) {
+            this.openPlatformModal();
+
+            return;
+          }
+
           //判断如果是多规格 并且没有选择组合
           const realLength = this.selectedVariantsIndex.filter(v => v !== undefined).length;
 

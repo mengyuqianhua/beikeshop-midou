@@ -497,6 +497,47 @@
                 </draggable>
               </div>
               <div class="help-text mb-1 mt-1 w-max-600">{{ __('admin/product.image_help') }}</div>
+
+              <div class="mt-3">
+                <label class="form-label fw-bold" for="xhs-note-url">小红书种草笔记链接（可选）</label>
+                <input id="xhs-note-url" type="text" class="form-control" v-model.trim="form.video.path"
+                       placeholder="https://www.xiaohongshu.com/explore/... 或 https://xhslink.com/...">
+                <div class="help-text mb-1 mt-1 w-max-600">
+                  填写小红书笔记分享链接后，前台商品详情页会展示「小红书种草笔记」跳转卡片；留空则不展示。
+                  该链接与商品视频共用同一字段，二者只能选其一（填写链接会覆盖已上传的视频）。
+                </div>
+                <div class="mt-1" v-if="form.video.path && isXhsNoteUrl(form.video.path)">
+                  <a :href="form.video.path" target="_blank" rel="noopener noreferrer">打开该小红书笔记 ↗</a>
+                </div>
+                <input type="hidden" name="video" :value="form.video.path">
+              </div>
+
+              <div class="mt-3">
+                <label class="form-label fw-bold" for="xhs-url">小红书链接（可选）</label>
+                <input id="xhs-url" name="xhs_url" type="text" class="form-control" v-model.trim="form.xhs_url"
+                       placeholder="https://www.xiaohongshu.com/explore/...">
+                <div class="help-text mb-1 mt-1 w-max-600">
+                  小红书种草笔记与未登录下单入口共用此链接；留空时自动兼容「视频链接」中填写的小红书链接。
+                </div>
+              </div>
+
+              <div class="mt-3">
+                <label class="form-label fw-bold" for="taobao-url">淘宝商品链接（可选）</label>
+                <input id="taobao-url" name="taobao_url" type="text" class="form-control" v-model.trim="form.taobao_url"
+                       placeholder="https://item.taobao.com/item.htm?id=...">
+                <div class="help-text mb-1 mt-1 w-max-600">
+                  填写淘宝商品详情页链接后，未登录用户点击「立即购买」时会展示淘宝下单入口及二维码；留空则使用按商品名称搜索的淘宝链接。
+                </div>
+              </div>
+
+              <div class="mt-3">
+                <label class="form-label fw-bold" for="douyin-url">抖音商品链接（可选）</label>
+                <input id="douyin-url" name="douyin_url" type="text" class="form-control" v-model.trim="form.douyin_url"
+                       placeholder="https://haohuo.jinritemai.com/views/product/item2?id=...">
+                <div class="help-text mb-1 mt-1 w-max-600">
+                  填写抖音商品详情页链接后，未登录用户点击「立即购买」时会展示抖音下单入口及二维码；留空则使用按商品名称搜索的抖音链接。
+                </div>
+              </div>
             </x-admin::form.row>
           </div>
         </div>
@@ -1755,6 +1796,9 @@
             path: @json(old('video', $product->video ?? '')),
             url: @json(image_origin(old('video', $product->video ?? ''))),
           },
+          xhs_url: @json(old('xhs_url', $product->xhs_url ?? '')),
+          taobao_url: @json(old('taobao_url', $product->taobao_url ?? '')),
+          douyin_url: @json(old('douyin_url', $product->douyin_url ?? '')),
           model: @json($product->skus[0]['model'] ?? ''),
           price: @json($product->skus[0]['price'] ?? ''),
           quantity: @json($product->skus[0]['quantity'] ?? ''),
@@ -1958,6 +2002,14 @@
             lowerSrc.includes('youtube.com/embed/') ||
             lowerSrc.includes('youtube.com/shorts/')
           );
+        },
+
+        isXhsNoteUrl(url) {
+          if (!url) return false;
+
+          const lowerUrl = String(url).toLowerCase();
+
+          return lowerUrl.includes('xiaohongshu.com') || lowerUrl.includes('xhslink.com');
         },
 
         isYouTubeVideoUrl(url) {
@@ -2169,8 +2221,20 @@
         addUrlSubmit(formName) {
           this.$refs[formName].validate((valid) => {
             if (valid) {
-              this.form.video.path = this.addUrlDialog.url;
-              this.form.video.url = this.addUrlDialog.url;
+              const addedUrl = this.addUrlDialog.url;
+
+              // 仅视频地址或小红书笔记链接写入 video 字段，避免添加普通图片时覆盖已有视频
+              if (this.isVideo(addedUrl) || this.isXhsNoteUrl(addedUrl)) {
+                this.form.video.path = addedUrl;
+                this.form.video.url = addedUrl;
+              }
+
+              // 小红书笔记链接仅保存到 video 字段，不写入图片列表
+              if (this.isXhsNoteUrl(addedUrl)) {
+                this.addUrlDialog.show = false;
+                return;
+              }
+
               const videoIndex = this.form.images.findIndex(e => this.isVideo(e));
               if (videoIndex > -1 && this.isVideo(this.addUrlDialog.url)) {
                 this.form.images[videoIndex] = this.addUrlDialog.url;

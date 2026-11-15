@@ -497,6 +497,33 @@ function image_resize($image, int $width = 100, int $height = 100)
 }
 
 /**
+ * 获取商品统一的小红书链接
+ *
+ * 合并规则：优先使用专属的小红书链接字段 xhs_url，兼容历史数据中存放在 video 字段的小红书链接。
+ * 小红书种草模块与第三方下单入口均通过该方法取链接，确保同一商品的链接唯一且一致。
+ *
+ * @param mixed $product
+ */
+function product_xhs_url($product): string
+{
+    $xhsUrl = is_array($product) ? ($product['xhs_url'] ?? '') : ($product->xhs_url ?? '');
+    $xhsUrl = trim((string) $xhsUrl);
+
+    if ($xhsUrl !== '') {
+        return $xhsUrl;
+    }
+
+    $video = is_array($product) ? ($product['video'] ?? '') : ($product->video ?? '');
+    $video = trim((string) $video);
+
+    if ($video !== '' && (stripos($video, 'xiaohongshu.com') !== false || stripos($video, 'xhslink.com') !== false)) {
+        return $video;
+    }
+
+    return '';
+}
+
+/**
  * 获取原图地址
  * @throws Exception
  */

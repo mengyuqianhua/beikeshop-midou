@@ -45,6 +45,9 @@ class ProductDetail extends JsonResource
             'brand_id'         => $this->brand->id                     ?? 0,
             'brand_name'       => $this->brand->name                   ?? '',
             'video'            => $this->video                         ?? '',
+            'xhs_url'          => $this->xhs_url                       ?? '',
+            'taobao_url'       => $this->taobao_url                    ?? '',
+            'douyin_url'       => $this->douyin_url                    ?? '',
             'weight'           => $this->weight                        ?? '',
             'weight_class'     => $this->weight_class                  ?? '',
             'images'           => array_map(function ($image) {
