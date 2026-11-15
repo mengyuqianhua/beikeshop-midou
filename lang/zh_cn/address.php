@@ -24,4 +24,6 @@ return [
     'enter_city' => '输入地址',
     'post_code'  => '邮编',
     'default'    => '默认地址',
+    'auto_detected' => '已根据详细地址自动填写地区',
+    'manual_adjust' => '可手动调整',
 ];

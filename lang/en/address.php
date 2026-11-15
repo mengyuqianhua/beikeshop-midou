@@ -24,4 +24,6 @@ return [
     'enter_city' => 'Enter city',
     'post_code'  => 'Zip Code',
     'default'    => 'Default',
+    'auto_detected' => 'Region auto-filled from your address',
+    'manual_adjust' => 'you can adjust it manually',
 ];
