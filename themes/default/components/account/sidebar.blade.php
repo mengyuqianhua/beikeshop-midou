@@ -49,13 +49,15 @@
           <span>{{ __('shop/account/addresses.index') }}</span>
         </a>
         @endhookwrapper
-        <a class="list-group-item d-flex align-items-center {{ equal_route('shop.account.wishlist.index') ? 'active' : '' }}"
-          href="{{ shop_route('account.wishlist.index') }}">
-          <span class="icon">
-            <svg t="1758341228154" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7785" width="16" height="16"><path d="M511.7 919.4c-4.6 0-9.8-0.7-14.1-2.1-9.8-3.1-241.3-78.2-366.7-295.8C62.4 502.6 23 321.3 137.3 201.8c53.2-55.6 112.9-84.1 177.7-84.8 64.9-1.5 132.4 27.4 196.3 81.9 64-54.4 131.1-82.4 196.3-81.9 64.7 0.7 124.5 29.2 177.7 84.8 114.4 119.5 74.9 300.8 6.4 419.7-125.3 217.7-356.8 292.8-366.6 295.9-4.3 1.3-8.9 2-13.4 2zM317.5 206.3H316c-39.8 0.4-78.3 19.7-114.2 57.3-75.1 78.5-50.9 214 6.4 313.5 92.3 160.3 255.8 232.4 303 250.5 47.2-18.2 211.3-91 303.2-250.5 57.3-99.5 81.5-235 6.4-313.5-35.9-37.6-74.4-56.8-114.2-57.3h-1.5c-63.8 0-122.8 45.5-161.2 83.9-1.6 1.6-3.3 3.1-5.2 4.4-7.6 6.4-17.1 9.8-27.4 10.1-11.7 0.6-24.5-5.6-33.2-15-37.8-37.9-96.8-83.4-160.6-83.4z" fill="#333333" p-id="7786"></path></svg>
-          </span>
-          <span>{{ __('shop/account/wishlist.index') }}</span>
-        </a>
+        @if (registration_allowed())
+          <a class="list-group-item d-flex align-items-center {{ equal_route('shop.account.wishlist.index') ? 'active' : '' }}"
+            href="{{ shop_route('account.wishlist.index') }}">
+            <span class="icon">
+              <svg t="1758341228154" class="icon" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="7785" width="16" height="16"><path d="M511.7 919.4c-4.6 0-9.8-0.7-14.1-2.1-9.8-3.1-241.3-78.2-366.7-295.8C62.4 502.6 23 321.3 137.3 201.8c53.2-55.6 112.9-84.1 177.7-84.8 64.9-1.5 132.4 27.4 196.3 81.9 64-54.4 131.1-82.4 196.3-81.9 64.7 0.7 124.5 29.2 177.7 84.8 114.4 119.5 74.9 300.8 6.4 419.7-125.3 217.7-356.8 292.8-366.6 295.9-4.3 1.3-8.9 2-13.4 2zM317.5 206.3H316c-39.8 0.4-78.3 19.7-114.2 57.3-75.1 78.5-50.9 214 6.4 313.5 92.3 160.3 255.8 232.4 303 250.5 47.2-18.2 211.3-91 303.2-250.5 57.3-99.5 81.5-235 6.4-313.5-35.9-37.6-74.4-56.8-114.2-57.3h-1.5c-63.8 0-122.8 45.5-161.2 83.9-1.6 1.6-3.3 3.1-5.2 4.4-7.6 6.4-17.1 9.8-27.4 10.1-11.7 0.6-24.5-5.6-33.2-15-37.8-37.9-96.8-83.4-160.6-83.4z" fill="#333333" p-id="7786"></path></svg>
+            </span>
+            <span>{{ __('shop/account/wishlist.index') }}</span>
+          </a>
+        @endif
         <a class="list-group-item d-flex align-items-center {{ equal_route('shop.account.rma.index') || equal_route('shop.account.rma.show') ? 'active' : '' }}"
           href="{{ shop_route('account.rma.index') }}">
           <span class="icon">

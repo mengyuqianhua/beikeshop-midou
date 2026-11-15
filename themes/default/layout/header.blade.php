@@ -91,7 +91,10 @@
         <ul class="navbar-nav flex-row">
           @hookwrapper('header.menu.icon')
           <li class="nav-item"><a href="#offcanvas-search-top" data-bs-toggle="offcanvas" class="nav-link"><img src="{{ asset('image/icons/search.svg') }}" class="img-fluid"></a></li>
-          <li class="nav-item"><a href="{{ shop_route('account.wishlist.index') }}" class="nav-link"><img src="{{ asset('image/icons/favorite.svg') }}" class="img-fluid"></a></li>
+          @if (registration_allowed())
+            <li class="nav-item"><a href="{{ shop_route('account.wishlist.index') }}" class="nav-link"><img src="{{ asset('image/icons/favorite.svg') }}" class="img-fluid"></a></li>
+          @endif
+          @if (registration_allowed())
           <li class="nav-item dropdown">
             <a href="{{ shop_route('account.index') }}" class="nav-link"><img src="{{ asset('image/icons/account.svg') }}" class="img-fluid"></a>
             <ul class="dropdown-menu">
@@ -107,8 +110,10 @@
                 <li><a href="{{ shop_route('account.order.index') }}" class="dropdown-item"><i
                       class="bi bi-clipboard-check me-1"></i> {{ __('shop/account/order.index') }}</a></li>
                 @hook('header.menu.icon.dropdown.menu.order.after')
-                <li><a href="{{ shop_route('account.wishlist.index') }}" class="dropdown-item"><i
-                      class="bi bi-heart me-1"></i> {{ __('shop/account/wishlist.index') }}</a></li>
+                @if (registration_allowed())
+                  <li><a href="{{ shop_route('account.wishlist.index') }}" class="dropdown-item"><i
+                        class="bi bi-heart me-1"></i> {{ __('shop/account/wishlist.index') }}</a></li>
+                @endif
                 <li>
                   <hr class="dropdown-divider opacity-100">
                 </li>
@@ -116,11 +121,13 @@
                     {{ __('common.sign_out') }}</a></li>
               @else
                 <li><a href="{{ shop_route('login.index') }}" class="dropdown-item"><i
-                      class="bi bi-box-arrow-right me-1"></i>{{ __('shop/login.login_and_sign') }}</a></li>
+                      class="bi bi-box-arrow-right me-1"></i>{{ registration_allowed() ? __('shop/login.login_and_sign') : __('shop/login.login') }}</a></li>
               @endauth
             </ul>
           </li>
+          @endif
           @endhookwrapper
+          @if (registration_allowed())
           <li class="nav-item">
             <a
               class="nav-link position-relative btn-right-cart {{ equal_route('shop.carts.index') ? 'page-cart' : '' }}"
@@ -129,6 +136,7 @@
               <span class="cart-badge-quantity"></span>
             </a>
           </li>
+          @endif
         </ul>
       </div>
     </div>
@@ -146,14 +154,18 @@
           <img src="{{ image_origin(system_setting('base.logo')) }}" class="img-fluid" alt="{{ system_setting('base.meta_title', 'BeikeShop开源好用的跨境电商系统') }}"></a>
       </div>
       <div class="right">
+        @if (registration_allowed())
         <a href="{{ shop_route('account.index') }}" class="nav-link mb-account-icon">
           <img src="{{ asset('image/icons/account.svg') }}" class="img-fluid" alt="account">
           @if (strstr(current_route(), 'shop.account'))
             <span></span>
           @endif
         </a>
+        @endif
+        @if (registration_allowed())
         <a href="{{ shop_route('carts.index') }}" class="nav-link ms-3 m-cart position-relative"><img src="{{ asset('image/icons/cart.svg') }}" alt="cart" class="img-fluid">
           <span class="cart-badge-quantity"></span></a>
+        @endif
       </div>
     </div>
   </div>

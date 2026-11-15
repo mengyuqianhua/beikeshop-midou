@@ -37,6 +37,9 @@
           <div class="help-text font-size-12 lh-base">{{ __('admin/setting.email_info') }}</div>
           </x-admin-form-input>
           <x-admin-form-switch name="guide" title="{{ __('admin/guide.heading_title') }}" value="{{ old('guide', system_setting('base.guide', '1')) }}" />
+          <x-admin-form-switch name="allow_register" title="{{ __('admin/setting.allow_register') }}" value="{{ old('allow_register', system_setting('base.allow_register', '1')) }}">
+            <div class="help-text font-size-12 lh-base">{{ __('admin/setting.allow_register_info') }}</div>
+          </x-admin-form-switch>
           <x-admin-form-switch name="maintenance_mode" title="{{ __('admin/maintenance.heading_title') }}" value="{{ old('maintenance_mode', system_setting('base.maintenance_mode', '0')) }}" />
           <x-admin-form-switch name="app_debug" title="{{ __('admin/setting.app_debug') }}" value="{{ old('app_debug', system_setting('base.app_debug', '0')) }}" />
           <x-admin-form-select title="{{ __('admin/setting.app_timezone') }}" name="app_timezone" :value="old('app_timezone', system_setting('base.app_timezone', 'UTC'))" :options="$timezones" key="value" label="label" />

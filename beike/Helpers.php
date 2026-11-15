@@ -53,6 +53,24 @@ function system_setting($key, $default = null)
 }
 
 /**
+ * 判断站点是否允许用户注册
+ *
+ * @param mixed $value 传入设置值用于判断，不传则读取系统设置
+ */
+function registration_allowed($value = null): bool
+{
+    if ($value === null) {
+        $value = system_setting('base.allow_register', '1');
+    }
+
+    if (is_bool($value)) {
+        return $value;
+    }
+
+    return ! in_array(strtolower(trim((string) $value)), ['0', 'false', 'off', 'no'], true);
+}
+
+/**
  * 获取后台设置到 settings 表的值
  *
  * @param      $key

@@ -694,15 +694,17 @@
             @hook('product.detail.buy.after')
             @if ($product['active'])
               @if (current_customer() || !request('iframe'))
-                @hookwrapper('product.detail.wishlist')
-                <div class="add-wishlist">
-                  <button class="btn btn-link ps-md-0 text-secondary" data-in-wishlist="{{ $product['in_wishlist'] }}"
-                          onclick="bk.addWishlist('{{ $product['id'] }}', this)">
-                    <i class="bi bi-heart{{ $product['in_wishlist'] ? '-fill' : '' }} me-1"></i>
-                    <span>{{ __('shop/products.add_to_favorites') }}</span>
-                  </button>
-                </div>
-                @endhookwrapper
+                @if (registration_allowed())
+                  @hookwrapper('product.detail.wishlist')
+                  <div class="add-wishlist">
+                    <button class="btn btn-link ps-md-0 text-secondary" data-in-wishlist="{{ $product['in_wishlist'] }}"
+                            onclick="bk.addWishlist('{{ $product['id'] }}', this)">
+                      <i class="bi bi-heart{{ $product['in_wishlist'] ? '-fill' : '' }} me-1"></i>
+                      <span>{{ __('shop/products.add_to_favorites') }}</span>
+                    </button>
+                  </div>
+                  @endhookwrapper
+                @endif
               @endif
             @else
               <div class="text-danger"><i class="bi bi-exclamation-circle-fill"></i> {{ __('product.has_been_inactive') }}</div>

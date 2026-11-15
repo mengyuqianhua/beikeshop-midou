@@ -44,7 +44,7 @@
       @hookwrapper('account.login.heading')
       <div class="hero-content pb-3 pb-lg-4 text-center">
         <h1 class="hero-heading">{{ __('shop/login.index') }}</h1>
-        <p class="text-muted mb-0">{{ __('shop/login.login_and_sign') }}</p>
+        <p class="text-muted mb-0">{{ registration_allowed() ? __('shop/login.login_and_sign') : __('shop/login.login') }}</p>
       </div>
       @endhookwrapper
     @endif
@@ -55,9 +55,11 @@
           <button type="button" class="auth-tab" :class="{active: activeTab === 'login'}" @click="switchTab('login')">
             <i class="bi bi-box-arrow-in-right"></i> {{ __('shop/login.login') }}
           </button>
-          <button type="button" class="auth-tab" :class="{active: activeTab === 'register'}" @click="switchTab('register')">
-            <i class="bi bi-person-plus"></i> {{ __('shop/login.register') }}
-          </button>
+          @if (registration_allowed())
+            <button type="button" class="auth-tab" :class="{active: activeTab === 'register'}" @click="switchTab('register')">
+              <i class="bi bi-person-plus"></i> {{ __('shop/login.register') }}
+            </button>
+          @endif
         </div>
 
         <div class="auth-body">
@@ -100,6 +102,7 @@
             @endhookwrapper
           </el-form>
 
+          @if (registration_allowed())
           <el-form v-show="activeTab === 'register'" ref="registerForm" :model="registerForm" :rules="registeRules" :inline-message="true" v-on:submit.native.prevent>
             @hookwrapper('account.login.new.email')
             <el-form-item prop="email">
@@ -143,6 +146,7 @@
             </div>
             @endhookwrapper
           </el-form>
+          @endif
 
           @if($social_buttons)
             <div class="social-wrap">

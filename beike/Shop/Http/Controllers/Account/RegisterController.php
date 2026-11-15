@@ -29,6 +29,10 @@ class RegisterController extends Controller
 
     public function sendVerifyCode(RegisterCodeRequest $request): JsonResponse
     {
+        if (! registration_allowed()) {
+            return json_fail(trans('shop/login.register_disabled'));
+        }
+
         try {
             AccountService::sendRegisterCode((string) $request->input('email'));
         } catch (\Exception $e) {
@@ -40,6 +44,10 @@ class RegisterController extends Controller
 
     public function store(RegisterRequest $request)
     {
+        if (! registration_allowed()) {
+            return json_fail(trans('shop/login.register_disabled'));
+        }
+
         $credentials = $request->only('email', 'password');
 
         try {

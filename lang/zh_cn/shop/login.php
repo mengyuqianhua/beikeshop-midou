@@ -38,6 +38,7 @@ return [
     'customer_not_approved'   => '该用户未审核',
     'login_successfully'      => '登录成功',
     'register_success'        => '注册成功',
+    'register_disabled'       => '当前站点已关闭用户注册',
     'should_be_approved'      => '需要后台管理员审核后才能登录',
     'customer_rejected'       => '该用户审核未通过',
     'third_party_logins'      => '第三方登录',

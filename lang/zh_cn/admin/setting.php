@@ -20,6 +20,8 @@ return [
     'product_per_page'                 => '每页显示数量',
     'cdn_url'                          => 'CDN URL',
     'app_debug'                        => '调试模式',
+    'allow_register'                   => '允许用户注册',
+    'allow_register_info'              => '关闭后前台将隐藏注册入口、收藏入口及购物车登录注册引导',
     'app_timezone'                     => '时区',
     'checkout_settings'                => '结账设置',
     'basic_settings'                   => '基础设置',

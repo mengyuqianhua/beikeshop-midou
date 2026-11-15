@@ -21,7 +21,7 @@
 
     <div class="row {{ !is_mobile() ? 'mt-5' : ''}}">
       <div class="col-12 col-md-8 left-column">
-        @if (!current_customer() && is_mobile())
+        @if (!current_customer() && is_mobile() && registration_allowed())
           <div class="card total-wrap mb-4 p-lg-4 shadow-sm">
             <div class="card-header">
               <h5 class="mb-0">{{ __('shop/login.login_and_sign') }}</h5>
@@ -102,7 +102,7 @@
 
       <div class="col-12 col-md-4 right-column">
         <div class="x-fixed-top">
-          @if (!current_customer() && !is_mobile())
+          @if (!current_customer() && !is_mobile() && registration_allowed())
             <div class="card total-wrap mb-4 p-lg-4 shadow-sm">
               <div class="card-header">
                 <h5 class="mb-0">{{ __('shop/login.login_and_sign') }}</h5>

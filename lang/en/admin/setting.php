@@ -17,6 +17,8 @@ return [
     'basic_settings'              => 'Basic Settings',
     'cdn_url'                     => 'CDN URL',
     'app_debug'                   => 'DEBUG',
+    'allow_register'              => 'Allow User Registration',
+    'allow_register_info'         => 'When disabled, the registration entry, favorites entry and cart login/registration guidance will be hidden',
     'app_timezone'                => 'Timezone',
     'checkout_settings'           => 'checkout settings',
     'customer_approved'           => 'User audit',

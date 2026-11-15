@@ -44,19 +44,21 @@
           <i class="bi bi-eye"></i>
         </button>
         @endhookwrapper
-        @hookwrapper('shared.product.btn.add_to_favorites')
-        <button
-          class="btn btn-dark text-light btn-wishlist"
-          product-id="{{ $product['sku_id'] }}"
-          product-price="{{ $product['price'] }}"
-          data-bs-toggle="tooltip"
-          data-bs-placement="top"
-          title="{{ __('shop/products.add_to_favorites') }}"
-          data-in-wishlist="{{ $product['in_wishlist'] }}"
-          onclick="bk.addWishlist('{{ $product['id'] }}', this)">
-          <i class="bi bi-heart{{ $product['in_wishlist'] ? '-fill' : '' }}"></i>
-        </button>
-        @endhookwrapper
+        @if (registration_allowed())
+          @hookwrapper('shared.product.btn.add_to_favorites')
+          <button
+            class="btn btn-dark text-light btn-wishlist"
+            product-id="{{ $product['sku_id'] }}"
+            product-price="{{ $product['price'] }}"
+            data-bs-toggle="tooltip"
+            data-bs-placement="top"
+            title="{{ __('shop/products.add_to_favorites') }}"
+            data-in-wishlist="{{ $product['in_wishlist'] }}"
+            onclick="bk.addWishlist('{{ $product['id'] }}', this)">
+            <i class="bi bi-heart{{ $product['in_wishlist'] ? '-fill' : '' }}"></i>
+          </button>
+          @endhookwrapper
+        @endif
       </div>
     @endif
   </div>
@@ -99,9 +101,11 @@
           {{ __('common.quick_view') }}
         </button>
         <br>
-        <button class="btn btn-link p-0 mt-1 text-secondary btn-wishlist" data-in-wishlist="{{ $product['in_wishlist'] }}" onclick="bk.addWishlist('{{ $product['id'] }}', this)">
-          <i class="bi bi-heart{{ $product['in_wishlist'] ? '-fill' : '' }} me-1"></i> {{ __('shop/products.add_to_favorites') }}
-        </button>
+        @if (registration_allowed())
+          <button class="btn btn-link p-0 mt-1 text-secondary btn-wishlist" data-in-wishlist="{{ $product['in_wishlist'] }}" onclick="bk.addWishlist('{{ $product['id'] }}', this)">
+            <i class="bi bi-heart{{ $product['in_wishlist'] ? '-fill' : '' }} me-1"></i> {{ __('shop/products.add_to_favorites') }}
+          </button>
+        @endif
       </div>
     @endif
   </div>

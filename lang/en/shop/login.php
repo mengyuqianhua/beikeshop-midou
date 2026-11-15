@@ -39,6 +39,7 @@ return [
     'please_confirm'          => 'Please confirm your password',
     'register'                => 'Register',
     'register_success'        => 'Registered successfully',
+    'register_disabled'       => 'User registration is currently disabled',
     'should_be_approved'      => 'The account must be approved by the administrator',
     'third_party_logins'      => 'Third-party Login',
 
