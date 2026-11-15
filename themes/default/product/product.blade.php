@@ -1339,6 +1339,18 @@
 
     $(initDetailViewer);
 
+    // 页面缓存的旧 SKU 已失效时，提示后自动刷新
+    if (window.$http && window.$http.axiosApi) {
+      window.$http.axiosApi.interceptors.response.use(null, function (error) {
+        var res  = error && error.response;
+        var data = res && res.data;
+        if (res && res.status === 422 && data && data.message === '{{ trans('cart.sku_invalid') }}') {
+          setTimeout(function () { window.location.reload(); }, 1500);
+        }
+        return Promise.reject(error);
+      });
+    }
+
     @hook('product.detail.script.after')
   </script>
 @endpush

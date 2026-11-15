@@ -35,12 +35,16 @@ class CartRequest extends FormRequest
     public function rules()
     {
         $skuId = (int) $this->get('sku_id');
+        $sku   = ProductSku::query()->find($skuId);
 
         return [
-            'sku_id'   => 'required|int',
-            'quantity' => ['required', 'int', 'min:1', function ($attribute, $value, $fail) use ($skuId) {
-                $skuQuantity = ProductSku::query()->where('id', $skuId)->value('quantity');
-                if ($value > $skuQuantity) {
+            'sku_id'   => ['required', 'int', function ($attribute, $value, $fail) use ($sku) {
+                if (! $sku) {
+                    $fail(trans('cart.sku_invalid'));
+                }
+            }],
+            'quantity' => ['required', 'int', 'min:1', function ($attribute, $value, $fail) use ($sku) {
+                if ($sku && $value > $sku->quantity) {
                     $fail(trans('cart.stock_out'));
                 }
             }],

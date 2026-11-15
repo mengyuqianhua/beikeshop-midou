@@ -25,6 +25,10 @@ class CartDetail extends JsonResource
         $productName    = $description->name;
         $subTotal       = $price * $this->quantity;
         $image          = $sku->image ?: $product->image;
+        $imageSrc       = is_array($image) ? ($image['src'] ?? '') : (string) $image;
+        if (! $imageSrc || ! file_exists(public_path(ltrim($imageSrc, '/')))) {
+            $image = $product->image;
+        }
         $variant_labels = trim($sku->getVariantLabel());
         $url_params     = [$product->id];
         if ($variant_labels) {
